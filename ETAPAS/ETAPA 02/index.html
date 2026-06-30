@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OntoMatch: Tríplice Hélice</title>
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons (via CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuração de Cores -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#181920',
+                        panelbg: '#22232a',
+                        cardbg: '#2a2b34',
+                        cardborder: '#353641',
+                        boardbg: '#21202e',
+                        boardborder: '#413c6b',
+                        cellbg: '#1a1b24',
+                        cellhover: '#2a2b38',
+                        textmuted: '#7d84d1',
+                        progressbg: '#1a1b23'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Estilos Customizados & Animações -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #181920;
+            color: #e2e8f0;
+            user-select: none;
+        }
+
+        .grid-cell {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .grid-cell:active {
+            transform: scale(0.95);
+        }
+
+        /* Animação para peça nova/fundida */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pop-in {
+            animation: popIn 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Animação de Limpeza */
+        @keyframes pulseAlert {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            50% { box-shadow: 0 0 15px 5px rgba(239, 68, 68, 0.3); }
+        }
+        .tool-active .grid-cell:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.5);
+            animation: pulseAlert 1s infinite;
+        }
+
+        /* Efeitos visuais do dashboard */
+        .glass-glow {
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 overflow-x-hidden selection:bg-indigo-500/30">
+
+    <!-- Header do Jogo -->
+    <header class="max-w-6xl w-full mb-8 flex flex-col md:flex-row justify-between items-end gap-6">
+        <div>
+            <h1 class="text-3xl font-black text-white flex items-center gap-2 mb-2">
+                <i data-lucide="zap" class="text-indigo-400 w-8 h-8"></i> OntoMatch: Tríplice Hélice
+            </h1>
+            <p class="text-sm text-slate-400 max-w-2xl leading-relaxed">
+                Clique no grid para alocar atores. Combine 3 elementos adjacentes idênticos para forjar estruturas superiores de inovação. Evite Silos de Dados e chegue a 100 no Índice de Inovação!
+            </p>
+        </div>
+        
+        <!-- Próxima Peça (Preview) -->
+        <div class="bg-[#23242c] border border-[#30313a] rounded-2xl p-3 flex items-center gap-4 shadow-xl shrink-0">
+            <div class="text-right">
+                <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Próxima Instância</div>
+                <div id="next-label" class="font-bold text-sm text-slate-200">Pesquisador</div>
+            </div>
+            <div id="next-icon-container" class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl border-2 bg-blue-500/10 border-blue-500/30">
+                <span id="next-icon">👨‍🔬</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Layout Principal -->
+    <main class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-[1.2fr_400px] gap-8">
+        
+        <!-- LADO ESQUERDO: TABULEIRO 5x5 -->
+        <section id="board-container" class="bg-boardbg border-2 border-boardborder rounded-[2rem] p-6 sm:p-10 relative shadow-[0_0_50px_-15px_rgba(99,102,241,0.2)] flex flex-col items-center justify-center min-h-[500px]">
+            
+            <!-- Overlay Fim de Jogo -->
+            <div id="game-over-overlay" class="absolute inset-0 z-50 bg-black/85 backdrop-blur-md rounded-[2rem] flex flex-col items-center justify-center p-8 text-center hidden">
+                <h2 id="game-over-title" class="text-4xl font-black mb-4"></h2>
+                <p id="game-over-desc" class="text-lg opacity-80 mb-8 max-w-md"></p>
+                <button onclick="restartGame()" class="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-indigo-100 transition-colors flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> Iniciar Nova Análise
+                </button>
+            </div>
+
+            <!-- Grid -->
+            <div id="grid" class="grid grid-cols-5 gap-2 w-full max-w-[450px] aspect-square relative z-10">
+                <!-- Células geradas via JS -->
+            </div>
+        </section>
+
+        <!-- LADO DIREITO: DASHBOARD (Referência da Imagem) -->
+        <section class="bg-panelbg border border-[#30313a] rounded-[1.5rem] p-6 sm:p-8 flex flex-col shadow-2xl h-full glass-glow">
+            <div class="mb-8">
+                <div class="text-[11px] font-black text-textmuted uppercase tracking-widest mb-1">Polo Tecnológico</div>
+                <h2 class="text-4xl font-black text-white tracking-tight drop-shadow-sm">Niterói</h2>
+            </div>
+
+            <div class="space-y-4 flex-1">
+                <!-- Card: Universidades -->
+                <div class="bg-cardbg border border-cardborder rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-[#2b354d] text-[#6b8cff] flex items-center justify-center shadow-inner">
+                            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[15px] font-semibold text-gray-300">Universidades</span>
+                    </div>
+                    <span id="stat-uni" class="text-2xl font-black text-white">5</span>
+                </div>
+
+                <!-- Card: Startups -->
+                <div class="bg-cardbg border border-cardborder rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-[#402934] text-[#ff6b8c] flex items-center justify-center shadow-inner">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[15px] font-semibold text-gray-300">Startups</span>
+                    </div>
+                    <span id="stat-startups" class="text-2xl font-black text-white">87</span>
+                </div>
+
+                <!-- Card: Parques -->
+                <div class="bg-cardbg border border-cardborder rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-[#403625] text-[#ffb84d] flex items-center justify-center shadow-inner">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-[15px] font-semibold text-gray-300">Parques Tecnológicos</span>
+                    </div>
+                    <span id="stat-parks" class="text-2xl font-black text-white">1</span>
+                </div>
+            </div>
+
+            <!-- Barra de Progresso -->
+            <div class="mt-8 pt-8 border-t border-white/5">
+                <div class="flex justify-between items-end mb-3">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Índice de Inovação</span>
+                    <span class="text-[1.35rem] font-black text-[#8b5cf6] flex items-baseline gap-0.5">
+                        <span id="stat-index">85</span><span class="text-sm text-textmuted font-bold">/100</span>
+                    </span>
+                </div>
+                
+                <div class="w-full h-3 bg-progressbg rounded-full overflow-hidden shadow-inner relative border border-black/20">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-[#5b45a0] to-[#b357d6] transition-all duration-700 ease-out relative" style="width: 85%;">
+                        <div class="absolute top-0 right-0 bottom-0 w-6 bg-white/20 blur-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LÓGICA DO JOGO -->
+    <script>
+        // Inicializa ícones do Lucide
+        lucide.createIcons();
+
+        // --- CONFIGURAÇÕES E ONTOLOGIA ---
+        const ENTITIES = {
+            // Hélice: ACADEMIA [P]
+            pesquisador:  { id: 'pesquisador', icon: '👨‍🔬', label: 'Pesquisador', level: 1, next: 'universidade', class: 'bg-blue-500/10 border-blue-500/30 text-blue-400' },
+            universidade: { id: 'universidade', icon: '🎓', label: 'Universidade', level: 2, next: 'centro', class: 'bg-blue-600/30 border-blue-400/50 text-blue-200 shadow-[0_0_15px_rgba(59,130,246,0.3)]' },
+            centro:       { id: 'centro', icon: '🔬', label: 'Centro de P&D', level: 3, next: null, class: 'bg-blue-500 border-blue-300 text-white shadow-[0_0_20px_rgba(59,130,246,0.6)]' },
+
+            // Hélice: MERCADO [P]
+            empreendedor: { id: 'empreendedor', icon: '👨‍💻', label: 'Empreendedor', level: 1, next: 'startup', class: 'bg-rose-500/10 border-rose-500/30 text-rose-400' },
+            startup:      { id: 'startup', icon: '🚀', label: 'Startup', level: 2, next: 'unicornio', class: 'bg-rose-600/30 border-rose-400/50 text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.3)]' },
+            unicornio:    { id: 'unicornio', icon: '🦄', label: 'Unicórnio', level: 3, next: null, class: 'bg-rose-500 border-rose-300 text-white shadow-[0_0_20px_rgba(244,63,94,0.6)]' },
+
+            // Hélice: ESTADO / INFRA [M/E]
+            projeto:      { id: 'projeto', icon: '📄', label: 'Edital de Fomento', level: 1, next: 'agencia', class: 'bg-amber-500/10 border-amber-500/30 text-amber-400' },
+            agencia:      { id: 'agencia', icon: '🏛️', label: 'Agência', level: 2, next: 'parque', class: 'bg-amber-600/30 border-amber-400/50 text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.3)]' },
+            parque:       { id: 'parque', icon: '🏢', label: 'Parque Tecnológico', level: 3, next: null, class: 'bg-amber-500 border-amber-300 text-white shadow-[0_0_20px_rgba(245,158,11,0.6)]' },
+
+            // Obstáculos & Ferramentas
+            silo:         { id: 'silo', icon: '⬛', label: 'Silo de Dados', level: 0, next: null, class: 'bg-[#1a1a24] border-[#333] text-gray-500 opacity-80' },
+            resolucao:    { id: 'resolucao', icon: '⚡', label: 'Axioma de Limpeza', level: 0, next: null, class: 'bg-purple-500/20 border-purple-400 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.4)]' },
+        };
+
+        const BOARD_COLS = 5;
+        const BOARD_ROWS = 5;
+        const WIN_INDEX = 100;
+
+        // --- ESTADO DO JOGO ---
+        let grid = Array(25).fill(null);
+        let nextTile = 'pesquisador';
+        let gameState = 'playing'; // 'playing', 'won', 'lost'
+        let stats = {
+            universidades: 5,
+            startups: 87,
+            parques: 1,
+            index: 85
+        };
+
+        // --- ELEMENTOS DA DOM ---
+        const elGrid = document.getElementById('grid');
+        const elBoardContainer = document.getElementById('board-container');
+        const elNextLabel = document.getElementById('next-label');
+        const elNextIcon = document.getElementById('next-icon');
+        const elNextContainer = document.getElementById('next-icon-container');
+        
+        const elStatUni = document.getElementById('stat-uni');
+        const elStatStartups = document.getElementById('stat-startups');
+        const elStatParks = document.getElementById('stat-parks');
+        const elStatIndex = document.getElementById('stat-index');
+        const elProgressBar = document.getElementById('progress-bar');
+        
+        const elOverlay = document.getElementById('game-over-overlay');
+        const elOverlayTitle = document.getElementById('game-over-title');
+        const elOverlayDesc = document.getElementById('game-over-desc');
+
+        // --- LÓGICA DE SORTEIO ---
+        function getRandomTile() {
+            const r = Math.random();
+            if (r < 0.30) return 'pesquisador';
+            if (r < 0.60) return 'empreendedor';
+            if (r < 0.85) return 'projeto';
+            if (r < 0.95) return 'silo';
+            return 'resolucao';
+        }
+
+        // --- BUSCA DE VIZINHOS ---
+        function getNeighbors(index) {
+            const neighbors = [];
+            const r = Math.floor(index / BOARD_COLS);
+            const c = index % BOARD_COLS;
+            if (r > 0) neighbors.push(index - BOARD_COLS); // cima
+            if (r < BOARD_ROWS - 1) neighbors.push(index + BOARD_COLS); // baixo
+            if (c > 0) neighbors.push(index - 1); // esquerda
+            if (c < BOARD_COLS - 1) neighbors.push(index + 1); // direita
+            return neighbors;
+        }
+
+        // --- ATUALIZAÇÃO DA INTERFACE ---
+        function renderDashboard() {
+            elStatUni.innerText = stats.universidades;
+            elStatStartups.innerText = stats.startups;
+            elStatParks.innerText = stats.parques;
+            
+            const renderIndex = Math.min(stats.index, 100);
+            elStatIndex.innerText = renderIndex;
+            elProgressBar.style.width = renderIndex + '%';
+        }
+
+        function renderNextTile() {
+            const entity = ENTITIES[nextTile];
+            elNextLabel.innerText = entity.label;
+            elNextIcon.innerText = entity.icon;
+            elNextContainer.className = `w-14 h-14 rounded-xl flex items-center justify-center text-3xl border-2 ${entity.class}`;
+            
+            if (nextTile === 'resolucao') {
+                elBoardContainer.classList.add('tool-active');
+            } else {
+                elBoardContainer.classList.remove('tool-active');
+            }
+        }
+
+        function renderGrid() {
+            elGrid.innerHTML = '';
+            
+            grid.forEach((cellType, i) => {
+                const cell = document.createElement('div');
+                
+                // Estilo base
+                let className = 'grid-cell rounded-xl flex flex-col items-center justify-center cursor-pointer border-2 transition-all shadow-inner aspect-square ';
+                
+                if (cellType) {
+                    const entity = ENTITIES[cellType];
+                    className += entity.class;
+                    
+                    cell.innerHTML = `
+                        <span class="text-4xl sm:text-5xl filter drop-shadow-md pop-in">${entity.icon}</span>
+                        <span class="text-[9px] font-bold mt-1 opacity-90 truncate w-full text-center px-1 pop-in">${entity.label}</span>
+                    `;
+                } else {
+                    className += 'bg-cellbg hover:bg-cellhover border-white/5';
+                }
+
+                cell.className = className;
+                cell.onclick = () => handleCellClick(i);
+                
+                elGrid.appendChild(cell);
+            });
+        }
+
+        // --- MECÂNICA PRINCIPAL ---
+        function handleCellClick(index) {
+            if (gameState !== 'playing') return;
+
+            // Uso da Ferramenta de Limpeza (Raio)
+            if (nextTile === 'resolucao') {
+                if (grid[index] === null) return; // Só clica onde tem peça
+                grid[index] = null;
+                renderGrid();
+                advanceTurn();
+                return;
+            }
+
+            // Bloqueia colocar em célula ocupada
+            if (grid[index] !== null) return;
+
+            // Posiciona a peça
+            grid[index] = nextTile;
+            
+            // Loop de Fusão (Match-3 BFS)
+            let currentPos = index;
+            let currentType = nextTile;
+
+            while (true) {
+                const visited = new Set();
+                const queue = [currentPos];
+                const cluster = [];
+
+                while(queue.length > 0) {
+                    const curr = queue.shift();
+                    if(visited.has(curr)) continue;
+                    visited.add(curr);
+                    cluster.push(curr);
+
+                    for(const n of getNeighbors(curr)) {
+                        if(grid[n] === currentType && !visited.has(n)) {
+                            queue.push(n);
+                        }
+                    }
+                }
+
+                const entityDef = ENTITIES[currentType];
+
+                // Se formou 3 ou mais e tem evolução
+                if (cluster.length >= 3 && entityDef.next) {
+                    const upgradeType = entityDef.next;
+                    
+                    // Limpa cluster
+                    cluster.forEach(idx => { grid[idx] = null; });
+                    
+                    // Cria evolução no local do clique original
+                    grid[currentPos] = upgradeType;
+
+                    // Atualiza Stats
+                    if (upgradeType === 'universidade') { stats.universidades += 1; stats.index += 1; }
+                    if (upgradeType === 'startup')      { stats.startups += 1; stats.index += 1; }
+                    if (upgradeType === 'parque')       { stats.parques += 1; stats.index += 3; }
+                    if (upgradeType === 'centro' || upgradeType === 'unicornio') { stats.index += 2; }
+                    
+                    currentType = upgradeType; // Checa se a nova peça formou combo
+                } else {
+                    break; // Fim das fusões
+                }
+            }
+
+            renderDashboard();
+            renderGrid();
+            advanceTurn();
+        }
+
+        function advanceTurn() {
+            // Checa Vitória
+            if (stats.index >= WIN_INDEX) {
+                setGameOver('won');
+                return;
+            }
+
+            // Sorteia próxima peça
+            nextTile = getRandomTile();
+            renderNextTile();
+
+            // Checa Derrota (Tabuleiro cheio e próxima peça não é Resolução)
+            const isFull = grid.every(c => c !== null);
+            if (isFull && nextTile !== 'resolucao') {
+                setGameOver('lost');
+            }
+        }
+
+        // --- GESTÃO DE ESTADO DO JOGO ---
+        function setGameOver(result) {
+            gameState = result;
+            elOverlay.classList.remove('hidden');
+            
+            if (result === 'won') {
+                elOverlayTitle.innerText = 'Ecossistema Consolidado!';
+                elOverlayTitle.className = 'text-4xl font-black mb-4 text-emerald-400';
+                elOverlayDesc.innerText = 'Você organizou os fluxos de conhecimento com maestria. Niterói atingiu a governança informacional máxima.';
+            } else {
+                elOverlayTitle.innerText = 'Fragmentação Informacional!';
+                elOverlayTitle.className = 'text-4xl font-black mb-4 text-rose-500';
+                elOverlayDesc.innerText = 'O tabuleiro lotou de Silos e Atores não-conectados. A assimetria venceu desta vez.';
+            }
+        }
+
+        function restartGame() {
+            grid = Array(25).fill(null);
+            nextTile = 'pesquisador';
+            stats = { universidades: 5, startups: 87, parques: 1, index: 85 };
+            gameState = 'playing';
+            
+            elOverlay.classList.add('hidden');
+            renderNextTile();
+            renderDashboard();
+            renderGrid();
+        }
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            renderNextTile();
+            renderDashboard();
+            renderGrid();
+        };
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cronologia ArT.Tech - Marina Micas</title>
+  <meta name="description"
+    content="Linha do tempo interativa e lúdica apresentando a evolução dos projetos de ecossistema de inovação e mapas interativos do Rio de Janeiro.">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+  <div class="page-scanner"></div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="app-container">
+
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">;</div>
+        <div class="logo-text">ART.TECH</div>
+      </div>
+
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Alternar Tema" title="Mudar Modo Claro / Escuro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+        </svg>
+      </button>
+    </header>
+
+    <section class="hero">
+      <div class="hero-badge">Processo Criativo</div>
+      <h1 class="hero-title">
+        O Entrelaçamento Quântico
+      </h1>
+      <p class="hero-desc">
+        Cinco projetos tornam-se conectados de tal forma que o estado de um deles determina instantaneamente o estado
+        dos outros, independentemente da distância entre eles
+      </p>
+    </section>
+
+    <section class="timeline-section" id="timeline">
+      <div class="timeline-container">
+        <!-- ETAPA 5 -->
+        <div class="timeline-item" id="etapa-5">
+          <div class="timeline-node" title="Etapa 5"></div>
+          <div class="timeline-stage-tag">ETAPA 05</div>
+          <div class="timeline-content-wrapper">
+            <div class="project-card">
+              <span class="card-badge visual-art">Arte Visual</span>
+
+              <h3 class="project-title">O mapa do Rio de Janeiro</h3>
+
+              <div class="media-container">
+                <img src="ETAPAS/ETAPA 05/img.png" alt="Etapa 5"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+                <br><br><p>O efeito das partículas: </p>
+                <video src="ETAPAS/ETAPA 05/O mapa Rio de Janeiro_OpenProcessing.mp4" autoplay loop muted playsinline
+                  style="width:100%; margin-top:10px;"></video>
+              </div>
+
+              <p class="project-summary">
+                Um experimento artístico-visual interativo criado em P5.js. O projeto renderiza o mapa SVG do estado do
+                Rio de Janeiro com um efeito de pulsação e um emissor de partículas neon que seguem o cursor e sobem
+                como se fossem empurradas por uma corrente de vento virtual.
+              </p>
+
+              <div class="features-section">
+                <h4>Recursos Principais:</h4>
+                <ul class="features-list">
+                  <li>Renderização e animação de pulsação harmônica do mapa do Rio de Janeiro SVG.</li>
+                  <li>Sistema de partículas interativo orientado a objetos que segue o cursor.</li>
+                  <li>Simulação física de vento virtual (ascendente e lateral) e gravidade reversa.</li>
+                  <li>Detecção de eventos hover nos municípios do mapa para interatividade estética.</li>
+                </ul>
+              </div>
+
+              <div class="tech-section">
+                <span class="tech-tag">P5.js</span>
+                <span class="tech-tag">OpenProcessing</span>
+                <span class="tech-tag">SVG</span>
+                <span class="tech-tag">JavaScript Vanilla</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="ETAPAS/ETAPA 05/index.html" class="btn btn-primary" title="O mapa do Rio de Janeiro"
+                  target="_blank">
+                  <i data-lucide="play"></i> Iniciar Aplicação
+                </a>
+                <a href="ETAPAS/ETAPA 05/README.pdf" class="btn btn-secondary" title="O mapa do Rio de Janeiro"
+                  target="_blank">
+                  <i data-lucide="file-text"></i> Explicação
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 4 -->
+        <div class="timeline-item" id="etapa-4">
+          <div class="timeline-node" title="Etapa 4"></div>
+          <div class="timeline-stage-tag">ETAPA 04</div>
+          <div class="timeline-content-wrapper">
+            <div class="project-card">
+              <span class="card-badge experience-3d">Experiência 3D</span>
+
+              <h3 class="project-title">O planeta Terra e o mapa do Rio de Janeiro</h3>
+
+              <div class="media-container">
+                <img src="ETAPAS/ETAPA 04/img.png" alt="Etapa 4"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+                <br><br><p>O efeito do planeta Terra girando até o mapa do Rio aparecer (MP4): </p>
+                <video src="ETAPAS/ETAPA 04/O planeta Terra e o mapa Rio de Janeiro_EditorP5JS.mp4" autoplay loop muted playsinline
+                  style="width:100%; margin-top:10px;"></video>
+                <br><br><p>O efeito do planeta Terra girando até o mapa do Rio aparecer (GIF): </p>
+                <img src="ETAPAS/ETAPA 04/O planeta Terra e o mapa Rio de Janeiro_EditorP5JS.gif" alt="Etapa 4"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+              </div>
+
+              <p class="project-summary">
+                Uma experiência 3D cinemática e interativa em WEBGL. A aplicação apresenta o globo terrestre
+                rotacionando no espaço e ativa automaticamente um zoom de câmera exponencial ao aproximar-se da latitude
+                e longitude reais do Rio de Janeiro, transicionando para o mapa municipal do estado.
+              </p>
+
+              <div class="features-section">
+                <h4>Recursos Principais:</h4>
+                <ul class="features-list">
+                  <li>Globo 3D holográfico com mapeamento de textura da Terra e wireframe neon.</li>
+                  <li>Conversão de coordenadas geográficas (lat/lon reais) em posições cartesianas 3D.</li>
+                  <li>Gatilho automático de transição cinematográfica e zoom exponencial suave.</li>
+                  <li>Integração e projeção de perspectiva 3D para renderizar mapa SVG interativo.</li>
+                </ul>
+              </div>
+
+              <div class="tech-section">
+                <span class="tech-tag">P5.js (WEBGL)</span>
+                <span class="tech-tag">p5.sound</span>
+                <span class="tech-tag">EditorP5JS</span>
+                <span class="tech-tag">SVG</span>
+                <span class="tech-tag">JavaScript ES6</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="ETAPAS/ETAPA 05/index.html" class="btn btn-primary" title="O planeta Terra e o mapa do Rio de Janeiro" target="_blank">
+                  <i data-lucide="play"></i> Iniciar Aplicação
+                </a>
+                <a href="ETAPAS/ETAPA 04/README.pdf" class="btn btn-secondary" title="O planeta Terra e o mapa do Rio de Janeiro" target="_blank">
+                  <i data-lucide="file-text"></i> Explicação
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 3 -->
+        <div class="timeline-item" id="etapa-3">
+          <div class="timeline-node" title="Etapa 3"></div>
+          <div class="timeline-stage-tag">ETAPA 03</div>
+          <div class="timeline-content-wrapper">
+            <div class="project-card">
+              <span class="card-badge web-portal">Portal Interativo</span>
+
+              <h3 class="project-title">Ontologia & Ecossistema Fluminense (Modais)</h3>
+
+              <div class="media-container">
+                <img src="ETAPAS/ETAPA 03/img.png" alt="Etapa 3"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+              </div>
+
+              <p class="project-summary">
+                Um portal conceitual futurista de ciência da informação. Ele utiliza um mapa em escala SVG interativo
+                conectado a um painel lateral de informações para detalhar as entidades (academia, empresas, governo)
+                pertencentes ao ecossistema de inovação fluminense.
+              </p>
+
+              <div class="features-section">
+                <h4>Recursos Principais:</h4>
+                <p>ATENÇÃO: Os nomes projetados aos cliques das regiões ainda precisam ser ajustados, estão da forma que o Antigravity gerou!</p>
+                <ul class="features-list">
+                  <li>Mapa interativo responsivo com detecção inteligente de municípios.</li>
+                  <li>Painel lateral de informações dinâmico (Modal/Slide-out) para metadados e tags.</li>
+                  <li>Desenho de rede de conexões animada em tempo real sobreposta com Canvas 2D.</li>
+                  <li>Suporte a internacionalização (PT/EN) e toggle de tema.</li>
+                </ul>
+              </div>
+
+              <div class="tech-section">
+                <span class="tech-tag">HTML5 / CSS3</span>
+                <span class="tech-tag">Canvas 2D API</span>
+                <span class="tech-tag">Lucide Icons</span>
+                <span class="tech-tag">Antigravity</span>
+                <span class="tech-tag">JavaScript Vanilla</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="ETAPAS/ETAPA 03/index.html" class="btn btn-primary" title="Ontologia & Ecossistema Fluminense (Modais)" target="_blank">
+                  <i data-lucide="play"></i> Iniciar Aplicação
+                </a>
+                <a href="ETAPAS/ETAPA 03/README.pdf" class="btn btn-secondary" title="Ontologia & Ecossistema Fluminense (Modais)" target="_blank">
+                  <i data-lucide="file-text"></i> Explicação
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 2 -->
+        <div class="timeline-item" id="etapa-2">
+          <div class="timeline-node" title="Etapa 2"></div>
+          <div class="timeline-stage-tag">ETAPA 02</div>
+          <div class="timeline-content-wrapper">
+            <div class="project-card">
+              <span class="card-badge game">Jogo Match-3</span>
+
+              <h3 class="project-title">OntoMatch: Tríplice Hélice</h3>
+
+              <div class="media-container">
+                <img src="ETAPAS/ETAPA 02/img.png" alt="Etapa 2"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+              </div>
+
+              <p class="project-summary">
+                Um jogo lúdico e educativo de correspondência (estilo Match-3) ambientado nos ecossistemas de inovação
+                fluminense. O objetivo é alocar e combinar atores adjacentes idênticos para forjar patamares superiores
+                de inovação, limpar silos informacionais e consolidar o ecossistema local.
+              </p>
+
+              <div class="features-section">
+                <h4>Recursos Principais:</h4>
+                <ul class="features-list">
+                  <li>Tabuleiro dinâmico 5x5 com mecânica de inserção e preview de peças.</li>
+                  <li>Algoritmo BFS para fusão e evolução de entidades (Pesquisador ➡️ Universidade ➡️ Centro P&D).</li>
+                  <li>Mecânicas de obstáculos ("Silos de Dados") e ferramentas de limpeza ("Axioma de Limpeza").</li>
+                  <li>Dashboard integrado com métricas do ecossistema e indicador do Índice de Inovação.</li>
+                </ul>
+              </div>
+
+              <div class="tech-section">
+                <span class="tech-tag">React.js</span>
+                <span class="tech-tag">TypeScript</span>
+                <span class="tech-tag">Tailwind CSS</span>
+                <span class="tech-tag">Lucide Icons</span>
+                <span class="tech-tag">Gemini</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="ETAPAS/ETAPA 02/index.html" class="btn btn-primary" title="OntoMatch: Tríplice Hélice" target="_blank">
+                  <i data-lucide="play"></i> Iniciar Aplicação
+                </a>
+                <a href="ETAPAS/ETAPA 02/README.pdf" class="btn btn-secondary" title="OntoMatch: Tríplice Hélice" target="_blank">
+                  <i data-lucide="file-text"></i> Explicação
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 1 -->
+        <div class="timeline-item" id="etapa-1">
+          <div class="timeline-node" title="Etapa 1"></div>
+          <div class="timeline-stage-tag">ETAPA 01</div>
+          <div class="timeline-content-wrapper">
+            <div class="project-card">
+              <span class="card-badge visual-concept">Conceito Teórico</span>
+
+              <h3 class="project-title">Ontologia & Ecossistema Fluminense (Conceito)</h3>
+
+              <div class="media-container">
+                <img src="ETAPAS/ETAPA 01/img.png" alt="Etapa 1"
+                  style="width:100%; max-height:300px; object-fit:cover;">
+              </div>
+
+              <p class="project-summary">
+                Uma plataforma institucional teórica de visualização. Ela apresenta os conceitos da Teoria da
+                Classificação Facetada de Ranganathan aplicada a sistemas de organização do conhecimento híbridos,
+                usando um mapa SVG com informações das regiões fluminenses.
+              </p>
+
+              <div class="features-section">
+                <h4>Recursos Principais:</h4>
+                <ul class="features-list">
+                  <li>Mapa vetorial do Rio de Janeiro com cores por região.</li>
+                  <li>Seções teóricas detalhadas para Engenharia de Ontologias em 6 etapas e Modelo PMEST.</li>
+                  <li>Sistema de internacionalização dinâmica (PT/EN) em tempo real.</li>
+                  <li>Design futurista premium com efeitos glassmorphism e animações baseadas no scroll.</li>
+                </ul>
+              </div>
+
+              <div class="tech-section">
+                <span class="tech-tag">HTML5 / CSS3</span>
+                <span class="tech-tag">Lucide Icons</span>
+                <span class="tech-tag">Google Fonts (Raleway)</span>
+                <span class="tech-tag">Gemini</span>
+                <span class="tech-tag">JavaScript Vanilla</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="ETAPAS/ETAPA 01/index.html" class="btn btn-primary" title="Ontologia & Ecossistema Fluminense (Conceito)" target="_blank">
+                  <i data-lucide="play"></i> Iniciar Aplicação
+                </a>
+                <a href="ETAPAS/ETAPA 01/README.pdf" class="btn btn-secondary" title="Ontologia & Ecossistema Fluminense (Conceito)" target="_blank">
+                  <i data-lucide="file-text"></i> Explicação
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <p class="footer-text">
+        © 2026 — Desenvolvido e mantido por <span>Marina Micas Jardim</span> com auxílio da inteligência artificial.
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Inicializa os ícones Lucide nos botões recém-criados
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>
